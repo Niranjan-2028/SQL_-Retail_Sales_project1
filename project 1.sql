@@ -17,20 +17,21 @@ CREATE TABLE projects.retail_sales
         cogs FLOAT,
         total_sale FLOAT
     );
-    
-   SELECT * FROM projects.retail_sales;
-    
-    
-    SELECT * FROM projects.retail_sales
-    ORDER BY transaction_id ASC LIMIT 2000;
+
+
+-- Data exploration 
+-- How many sales we have?
+SELECT COUNT(*) AS total_sales FROM projects.retail_sales;
+
+-- How many UNIQUE custmers we have?
+SELECT COUNT(DISTINCT(customer_id)) FROM projects.retail_sales;
+ 
+--  How many UNIQUE category we have?
+SELECT DISTINCT(category) FROM projects.retail_sales;
   
-  SELECT 
-	count(*)
-  FROM projects.retail_sales;
 
 
-
--- Data cleaning 
+-- Check NULL value and delete them 
  
 SELECT * FROM projects.retail_sales
 WHERE transaction_id IS NULL
@@ -67,28 +68,21 @@ WHERE
       OR 
       total_sale IS NULL;
 
--- Data exploration 
--- How many sales we have?
-SELECT COUNT(*) AS total_sales FROM projects.retail_sales;
 
--- How many UNIQUE custmers we have?
-SELECT COUNT(DISTINCT(customer_id)) FROM projects.retail_sales;
- 
---  How many UNIQUE category we have?
-SELECT DISTINCT(category) FROM projects.retail_sales;
     
 
 
 -- Data Analysis & Business Key Problem & Answers
  
  
--- My analsis and finding
+-- My analysis and finding
 -- Q1. Write a SQL query to retrieve all columns for sales made on 2022-11-05
 SELECT * FROM projects.retail_sales
 WHERE sale_date = "2022-11-05";
 
--- Q2. Write a SQL query to retrieve all transaction where the catogory is 'clothing' and
---  the  quantity sold is more than 10 on the month of NOV-22
+
+
+-- Q2. Write a SQL query to retrieve all transaction where the catogory is 'clothing' and the  quantity sold is more than 10 on the month of NOV-22
 SELECT *
  FROM projects.retail_sales
  WHERE category = 'clothing'
@@ -128,11 +122,12 @@ WHERE total_sale >1000;
 
 -- Q6. Write a SQL query to find the total nunber of transactions (transation_id) made by each gender in each category.
 SELECT 
-	COUNT(*) AS total_transaction,
+	category,
 	gender, 
-    category
+    COUNT(*) AS total_transaction
 FROM projects.retail_sales
-GROUP BY gender, category;
+GROUP BY gender, category
+ORDER BY 1;
 
 
 
@@ -140,7 +135,8 @@ GROUP BY gender, category;
 -- Q7. Write a SQL query to calculate the average sale for each month. Find out the best selling month in each year.
 SELECT 
 	year,
-    month,avg_sale_each_month
+    month,
+    avg_sale_each_month
  FROM
 (
 SELECT 
@@ -163,7 +159,7 @@ WHERE rank_avg_sale = 1;
 -- Q8. Write  a SQL query to find the top 5 customers on the hoghest total sales.
 SELECT
 	customer_id,
-    SUM(total_sale)
+    SUM(total_sale) AS total_sales
 FROM projects.retail_sales
 GROUP BY 1
 ORDER BY 2 DESC
@@ -208,6 +204,11 @@ SELECT
     COUNT(*) AS total_sales
  FROM hourly_sale
  GROUP BY shift
+
+
+
+
+-- END OF PROJECT!
 
 
 
