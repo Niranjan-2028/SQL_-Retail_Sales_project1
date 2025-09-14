@@ -53,7 +53,7 @@ CREATE TABLE retail_sales
 SELECT * FROM projects.retail_sales;
 SELECT COUNT(*) FROM projects.retail_sales;
 SELECT COUNT(DISTINCT customer_id) FROM projects.retail_sales ORDER BY customer_id;
- SELECT DISTINCT category FROM projects.retail_sales;
+SELECT DISTINCT category FROM projects.retail_sales;
 
 - **Null Value Check and delete them**: Check for any null values in the dataset and delete records with missing data.
 SELECT * FROM retail_sales
