@@ -4,7 +4,7 @@
 
 **Project Title**: Retail Sales Analysis  
 **Level**: Beginner  
-**Database**: `p1_retail_db`
+**Database**: `projects`
 
 This project is designed to demonstrate SQL skills and techniques typically used by data analysts to explore, clean, and analyze retail sales data. The project involves setting up a retail sales database, performing exploratory data analysis (EDA), and answering specific business questions through SQL queries. This project is ideal for those who are starting their journey in data analysis and want to build a solid foundation in SQL.
 
@@ -17,13 +17,13 @@ This project is designed to demonstrate SQL skills and techniques typically used
 
 ## Project Structure
 
-### 1. Database Setup
+### Database Setup
 
-- **Database Creation**: The project starts by creating a database named `p1_retail_db`.
+- **Database Creation**: The project starts by creating a database named `projects`.
 - **Table Creation**: A table named `retail_sales` is created to store the sales data. The table structure includes columns for transaction ID, sale date, sale time, customer ID, gender, age, product category, quantity sold, price per unit, cost of goods sold (COGS), and total sale amount.
 
 ```sql
-CREATE DATABASE p1_retail_db;
+CREATE DATABASE projects;
 
 CREATE TABLE retail_sales
 (
@@ -41,18 +41,21 @@ CREATE TABLE retail_sales
 );
 ```
 
-### 2. Data Exploration & Cleaning
+###  Data Exploration & Cleaning
 
+- **View of data**: Overview the data
 - **Record Count**: Determine the total number of records in the dataset.
 - **Customer Count**: Find out how many unique customers are in the dataset.
 - **Category Count**: Identify all unique product categories in the dataset.
-- **Null Value Check**: Check for any null values in the dataset and delete records with missing data.
+
 
 ```sql
-SELECT COUNT(*) FROM retail_sales;
-SELECT COUNT(DISTINCT customer_id) FROM retail_sales;
-SELECT DISTINCT category FROM retail_sales;
+SELECT * FROM projects.retail_sales;
+SELECT COUNT(*) FROM projects.retail_sales;
+SELECT COUNT(DISTINCT customer_id) FROM projects.retail_sales ORDER BY customer_id;
+ SELECT DISTINCT category FROM projects.retail_sales;
 
+- **Null Value Check and delete them**: Check for any null values in the dataset and delete records with missing data.
 SELECT * FROM retail_sales
 WHERE 
     sale_date IS NULL OR sale_time IS NULL OR customer_id IS NULL OR 
@@ -79,15 +82,11 @@ WHERE sale_date = '2022-11-05';
 
 2. **Write a SQL query to retrieve all transactions where the category is 'Clothing' and the quantity sold is more than 4 in the month of Nov-2022**:
 ```sql
-SELECT 
-  *
-FROM retail_sales
-WHERE 
-    category = 'Clothing'
-    AND 
-    TO_CHAR(sale_date, 'YYYY-MM') = '2022-11'
-    AND
-    quantity >= 4
+SELECT *
+ FROM projects.retail_sales
+ WHERE category = 'clothing'
+	AND quantity >= 4
+	AND DATE_FORMAT(sale_date, '%Y-%m') = '2022-11';
 ```
 
 3. **Write a SQL query to calculate the total sales (total_sale) for each category.**:
@@ -117,34 +116,33 @@ WHERE total_sale > 1000
 6. **Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.**:
 ```sql
 SELECT 
-    category,
-    gender,
-    COUNT(*) as total_trans
-FROM retail_sales
-GROUP 
-    BY 
-    category,
-    gender
-ORDER BY 1
+	category,
+	gender, 
+    COUNT(*) AS total_transaction
+FROM projects.retail_sales
+GROUP BY gender, category
+ORDER BY 1;
 ```
 
 7. **Write a SQL query to calculate the average sale for each month. Find out best selling month in each year**:
 ```sql
 SELECT 
-       year,
-       month,
-    avg_sale
-FROM 
-(    
+	year,
+    month,
+    avg_sale_each_month
+ FROM
+(
 SELECT 
-    EXTRACT(YEAR FROM sale_date) as year,
-    EXTRACT(MONTH FROM sale_date) as month,
-    AVG(total_sale) as avg_sale,
-    RANK() OVER(PARTITION BY EXTRACT(YEAR FROM sale_date) ORDER BY AVG(total_sale) DESC) as rank
-FROM retail_sales
-GROUP BY 1, 2
-) as t1
-WHERE rank = 1
+    -- date_format(sale_date, '%y-%m') AS months,
+    YEAR(sale_date) AS year,
+    MONTH(sale_date) AS month,
+    ROUND(AVG(total_sale),2) AS avg_sale_each_month,
+    RANK() OVER(PARTITION BY YEAR(sale_date) ORDER BY AVG(total_sale) DESC) AS rank_avg_sale
+FROM projects.retail_sales
+GROUP BY year, month
+-- ORDER BY avg_sale_each_month DESC,month;
+) AS t1
+WHERE rank_avg_sale = 1;
 ```
 
 8. **Write a SQL query to find the top 5 customers based on the highest total sales **:
@@ -161,10 +159,10 @@ LIMIT 5
 9. **Write a SQL query to find the number of unique customers who purchased items from each category.**:
 ```sql
 SELECT 
-    category,    
-    COUNT(DISTINCT customer_id) as cnt_unique_cs
-FROM retail_sales
-GROUP BY category
+	category,
+	COUNT( DISTINCT(customer_id)) AS count_unique_customer
+FROM projects.retail_sales
+GROUP BY category;
 ```
 
 10. **Write a SQL query to find the customers who purchased all categories.**:
@@ -223,6 +221,3 @@ This project serves as a comprehensive introduction to SQL for data analysts, co
 ## Author - Zero Analyst
 
 This project is part of my portfolio, showcasing the SQL skills essential for data analyst roles. If you have any questions, feedback, or would like to collaborate, feel free to get in touch!
-
-
-
